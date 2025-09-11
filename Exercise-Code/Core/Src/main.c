@@ -54,7 +54,8 @@ static void MX_GPIO_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+int counter = 2;
+int state = 0;
 /* USER CODE END 0 */
 
 /**
@@ -96,6 +97,25 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
+	//LED-RED on
+	if(state == 0){
+		HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, RESET);
+		HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, SET);
+	}
+
+	//LED-YELLOW on
+	if(state == 1){
+		HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, SET);
+		HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, RESET);
+	}
+
+	--counter;
+	if(counter <= 0){
+		counter = 2;
+		state = !state;
+	}
+	HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }
