@@ -32,6 +32,13 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define STATE_GREEN 0
+#define STATE_YELLOW 1
+#define STATE_RED 2
+
+#define COUNTER_GREEN 2
+#define COUNTER_YELLOW 3
+#define COUNTER_RED 5
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -54,6 +61,66 @@ static void MX_GPIO_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void DrawLedState(int led_state){
+	switch(led_state){
+	case STATE_GREEN:
+		HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, RESET);
+		HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, SET);
+		HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, SET);
+		break;
+
+	case STATE_YELLOW:
+		HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, SET);
+		HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, RESET);
+		HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, SET);
+		break;
+
+	case STATE_RED:
+		HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, SET);
+		HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, SET);
+		HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, RESET);
+		break;
+//Error -> All LED light up
+	default:
+		HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, RESET);
+		HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, RESET);
+		HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, RESET);
+		break;
+
+	}
+}
+
+int GetNextState(int led_state){
+	switch(led_state){
+	case STATE_GREEN:
+		return STATE_YELLOW;
+
+	case STATE_YELLOW:
+		return STATE_RED;
+
+	case STATE_RED:
+		return STATE_GREEN;
+
+	default:
+		return -1;
+	}
+}
+
+int GetStateCounter(int led_state){
+	switch(led_state){
+	case STATE_GREEN:
+		return COUNTER_GREEN;
+
+	case STATE_YELLOW:
+		return COUNTER_YELLOW;
+
+	case STATE_RED:
+		return COUNTER_RED;
+
+	default:
+		return -1;
+	}
+}
 
 /* USER CODE END 0 */
 
@@ -86,7 +153,10 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
+  int led_counter = COUNTER_RED;
+  int led_state = STATE_RED;
 
+  DrawLedState(led_state);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -96,6 +166,13 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
+	--led_counter;
+	if(led_counter <= 0){
+		led_state = GetNextState(led_state);
+		led_counter = GetStateCounter(led_state);
+		DrawLedState(led_state);
+	}
   }
   /* USER CODE END 3 */
 }
@@ -148,10 +225,10 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, LED_RED_Pin|LED_YELLOW_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, LED_RED_Pin|LED_YELLOW_Pin|LED_GREEN_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : LED_RED_Pin LED_YELLOW_Pin */
-  GPIO_InitStruct.Pin = LED_RED_Pin|LED_YELLOW_Pin;
+  /*Configure GPIO pins : LED_RED_Pin LED_YELLOW_Pin LED_GREEN_Pin */
+  GPIO_InitStruct.Pin = LED_RED_Pin|LED_YELLOW_Pin|LED_GREEN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
