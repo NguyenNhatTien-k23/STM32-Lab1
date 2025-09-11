@@ -167,12 +167,13 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-	--led_counter;
 	if(led_counter <= 0){
 		led_state = GetNextState(led_state);
 		led_counter = GetStateCounter(led_state);
 		DrawLedState(led_state);
 	}
+	--led_counter;
+	HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }
