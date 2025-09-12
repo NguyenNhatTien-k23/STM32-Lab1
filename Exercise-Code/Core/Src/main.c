@@ -43,6 +43,25 @@
 #define SET_A 0
 #define SET_B 1
 
+#define CODE_SEG_A ((uint8_t)0x01)
+#define CODE_SEG_B ((uint8_t)0x02)
+#define CODE_SEG_C ((uint8_t)0x04)
+#define CODE_SEG_D ((uint8_t)0x08)
+#define CODE_SEG_E ((uint8_t)0x10)
+#define CODE_SEG_F ((uint8_t)0x20)
+#define CODE_SEG_G ((uint8_t)0x40)
+
+#define CODE_NUM_0 ((uint8_t)0x3F)
+#define CODE_NUM_1 ((uint8_t)0x06)
+#define CODE_NUM_2 ((uint8_t)0x5B)
+#define CODE_NUM_3 ((uint8_t)0x4F)
+#define CODE_NUM_4 ((uint8_t)0x66)
+#define CODE_NUM_5 ((uint8_t)0x6D)
+#define CODE_NUM_6 ((uint8_t)0x7D)
+#define CODE_NUM_7 ((uint8_t)0x07)
+#define CODE_NUM_8 ((uint8_t)0x7F)
+#define CODE_NUM_9 ((uint8_t)0x6F)
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -65,18 +84,16 @@ int GetNextState(int led_state);
 int GetStateCounter(int led_state);
 
 void DisplayLED(int led_set, int led_state);
+void DisplayLEDError();
 void ResetLED(int led_set);
-uint16_t GetLEDSetPin(led_set);
+uint16_t GetLEDSetPin(int led_set);
 
-void DrawSetA(int led_state);
-void DrawSetB(int led_state);
+void Display7SEG(int segment_set, int num);
+void Display7SEGError();
+void Reset7SEG(int segment_set);
+uint16_t Get7SEGSetPin(int segment_set);
+uint8_t GetNumberCode(int number);
 
-void ResetSetA();
-void ResetSetB();
-
-void display7SEG(int num);
-void Reset7SEG();
-void Draw7SEG(int num);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -114,215 +131,17 @@ int GetStateCounter(int led_state){
 	}
 }
 
-
-
-void DrawSetA(int led_state){
-	ResetSetA();
-	switch(led_state){
-	case STATE_GREEN:
-		HAL_GPIO_WritePin(LED_GREEN_A0_GPIO_Port, LED_GREEN_A0_Pin, RESET);
-		HAL_GPIO_WritePin(LED_GREEN_A1_GPIO_Port, LED_GREEN_A1_Pin, RESET);
-		break;
-
-	case STATE_YELLOW:
-		HAL_GPIO_WritePin(LED_YELLOW_A0_GPIO_Port, LED_YELLOW_A0_Pin, RESET);
-		HAL_GPIO_WritePin(LED_YELLOW_A1_GPIO_Port, LED_YELLOW_A1_Pin, RESET);
-		break;
-
-	case STATE_RED:
-		HAL_GPIO_WritePin(LED_RED_A0_GPIO_Port, LED_RED_A0_Pin, RESET);
-		HAL_GPIO_WritePin(LED_RED_A1_GPIO_Port, LED_RED_A1_Pin, RESET);
-		break;
-//Error -> All LED light on
-	default:
-		HAL_GPIO_WritePin(LED_GREEN_A0_GPIO_Port, LED_GREEN_A0_Pin, RESET);
-		HAL_GPIO_WritePin(LED_GREEN_A1_GPIO_Port, LED_GREEN_A1_Pin, RESET);
-		HAL_GPIO_WritePin(LED_YELLOW_A0_GPIO_Port, LED_YELLOW_A0_Pin, RESET);
-		HAL_GPIO_WritePin(LED_YELLOW_A1_GPIO_Port, LED_YELLOW_A1_Pin, RESET);
-		HAL_GPIO_WritePin(LED_RED_A0_GPIO_Port, LED_RED_A0_Pin, RESET);
-		HAL_GPIO_WritePin(LED_RED_A1_GPIO_Port, LED_RED_A1_Pin, RESET);
-		break;
-	}
-}
-
-void DrawSetB(int led_state){
-	ResetSetB();
-	switch(led_state){
-	case STATE_GREEN:
-		HAL_GPIO_WritePin(LED_GREEN_B0_GPIO_Port, LED_GREEN_B0_Pin, RESET);
-		HAL_GPIO_WritePin(LED_GREEN_B1_GPIO_Port, LED_GREEN_B1_Pin, RESET);
-		break;
-
-	case STATE_YELLOW:
-		HAL_GPIO_WritePin(LED_YELLOW_B0_GPIO_Port, LED_YELLOW_B0_Pin, RESET);
-		HAL_GPIO_WritePin(LED_YELLOW_B1_GPIO_Port, LED_YELLOW_B1_Pin, RESET);
-		break;
-
-	case STATE_RED:
-		HAL_GPIO_WritePin(LED_RED_B0_GPIO_Port, LED_RED_B0_Pin, RESET);
-		HAL_GPIO_WritePin(LED_RED_B1_GPIO_Port, LED_RED_B1_Pin, RESET);
-		break;
-//Error -> All LED light on
-	default:
-		HAL_GPIO_WritePin(LED_GREEN_B0_GPIO_Port, LED_GREEN_B0_Pin, RESET);
-		HAL_GPIO_WritePin(LED_GREEN_B1_GPIO_Port, LED_GREEN_B1_Pin, RESET);
-		HAL_GPIO_WritePin(LED_YELLOW_B0_GPIO_Port, LED_YELLOW_B0_Pin, RESET);
-		HAL_GPIO_WritePin(LED_YELLOW_B1_GPIO_Port, LED_YELLOW_B1_Pin, RESET);
-		HAL_GPIO_WritePin(LED_RED_B0_GPIO_Port, LED_RED_B0_Pin, RESET);
-		HAL_GPIO_WritePin(LED_RED_B1_GPIO_Port, LED_RED_B1_Pin, RESET);
-		break;
-	}
-}
-
-void ResetSetA(){
-	HAL_GPIO_WritePin(LED_GREEN_A0_GPIO_Port, LED_GREEN_A0_Pin, SET);
-	HAL_GPIO_WritePin(LED_GREEN_A1_GPIO_Port, LED_GREEN_A1_Pin, SET);
-	HAL_GPIO_WritePin(LED_YELLOW_A0_GPIO_Port, LED_YELLOW_A0_Pin, SET);
-	HAL_GPIO_WritePin(LED_YELLOW_A1_GPIO_Port, LED_YELLOW_A1_Pin, SET);
-	HAL_GPIO_WritePin(LED_RED_A0_GPIO_Port, LED_RED_A0_Pin, SET);
-	HAL_GPIO_WritePin(LED_RED_A1_GPIO_Port, LED_RED_A1_Pin, SET);
-}
-
-void ResetSetB(){
-	HAL_GPIO_WritePin(LED_GREEN_B0_GPIO_Port, LED_GREEN_B0_Pin, SET);
-	HAL_GPIO_WritePin(LED_GREEN_B1_GPIO_Port, LED_GREEN_B1_Pin, SET);
-	HAL_GPIO_WritePin(LED_YELLOW_B0_GPIO_Port, LED_YELLOW_B0_Pin, SET);
-	HAL_GPIO_WritePin(LED_YELLOW_B1_GPIO_Port, LED_YELLOW_B1_Pin, SET);
-	HAL_GPIO_WritePin(LED_RED_B0_GPIO_Port, LED_RED_B0_Pin, SET);
-	HAL_GPIO_WritePin(LED_RED_B1_GPIO_Port, LED_RED_B1_Pin, SET);
-}
-
-/*Exercise 4,5 code*/
-
-void display7SEG(int num){
-	switch(num){
-		case 0:
-			HAL_GPIO_WritePin(SEG_A_GPIO_Port, SEG_A_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_B_GPIO_Port, SEG_B_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_C_GPIO_Port, SEG_C_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_D_GPIO_Port, SEG_D_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_E_GPIO_Port, SEG_E_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_F_GPIO_Port, SEG_F_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_G_GPIO_Port, SEG_G_Pin, SET);
-			break;
-
-		case 1:
-			HAL_GPIO_WritePin(SEG_A_GPIO_Port, SEG_A_Pin, SET);
-			HAL_GPIO_WritePin(SEG_B_GPIO_Port, SEG_B_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_C_GPIO_Port, SEG_C_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_D_GPIO_Port, SEG_D_Pin, SET);
-			HAL_GPIO_WritePin(SEG_E_GPIO_Port, SEG_E_Pin, SET);
-			HAL_GPIO_WritePin(SEG_F_GPIO_Port, SEG_F_Pin, SET);
-			HAL_GPIO_WritePin(SEG_G_GPIO_Port, SEG_G_Pin, SET);
-			break;
-
-		case 2:
-			HAL_GPIO_WritePin(SEG_A_GPIO_Port, SEG_A_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_B_GPIO_Port, SEG_B_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_C_GPIO_Port, SEG_C_Pin, SET);
-			HAL_GPIO_WritePin(SEG_D_GPIO_Port, SEG_D_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_E_GPIO_Port, SEG_E_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_F_GPIO_Port, SEG_F_Pin, SET);
-			HAL_GPIO_WritePin(SEG_G_GPIO_Port, SEG_G_Pin, RESET);
-			break;
-
-		case 3:
-			HAL_GPIO_WritePin(SEG_A_GPIO_Port, SEG_A_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_B_GPIO_Port, SEG_B_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_C_GPIO_Port, SEG_C_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_D_GPIO_Port, SEG_D_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_E_GPIO_Port, SEG_E_Pin, SET);
-			HAL_GPIO_WritePin(SEG_F_GPIO_Port, SEG_F_Pin, SET);
-			HAL_GPIO_WritePin(SEG_G_GPIO_Port, SEG_G_Pin, RESET);
-			break;
-
-		case 4:
-			HAL_GPIO_WritePin(SEG_A_GPIO_Port, SEG_A_Pin, SET);
-			HAL_GPIO_WritePin(SEG_B_GPIO_Port, SEG_B_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_C_GPIO_Port, SEG_C_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_D_GPIO_Port, SEG_D_Pin, SET);
-			HAL_GPIO_WritePin(SEG_E_GPIO_Port, SEG_E_Pin, SET);
-			HAL_GPIO_WritePin(SEG_F_GPIO_Port, SEG_F_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_G_GPIO_Port, SEG_G_Pin, RESET);
-			break;
-
-		case 5:
-			HAL_GPIO_WritePin(SEG_A_GPIO_Port, SEG_A_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_B_GPIO_Port, SEG_B_Pin, SET);
-			HAL_GPIO_WritePin(SEG_C_GPIO_Port, SEG_C_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_D_GPIO_Port, SEG_D_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_E_GPIO_Port, SEG_E_Pin, SET);
-			HAL_GPIO_WritePin(SEG_F_GPIO_Port, SEG_F_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_G_GPIO_Port, SEG_G_Pin, RESET);
-			break;
-
-		case 6:
-			HAL_GPIO_WritePin(SEG_A_GPIO_Port, SEG_A_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_B_GPIO_Port, SEG_B_Pin, SET);
-			HAL_GPIO_WritePin(SEG_C_GPIO_Port, SEG_C_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_D_GPIO_Port, SEG_D_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_E_GPIO_Port, SEG_E_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_F_GPIO_Port, SEG_F_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_G_GPIO_Port, SEG_G_Pin, RESET);
-			break;
-
-		case 7:
-			HAL_GPIO_WritePin(SEG_A_GPIO_Port, SEG_A_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_B_GPIO_Port, SEG_B_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_C_GPIO_Port, SEG_C_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_D_GPIO_Port, SEG_D_Pin, SET);
-			HAL_GPIO_WritePin(SEG_E_GPIO_Port, SEG_E_Pin, SET);
-			HAL_GPIO_WritePin(SEG_F_GPIO_Port, SEG_F_Pin, SET);
-			HAL_GPIO_WritePin(SEG_G_GPIO_Port, SEG_G_Pin, SET);
-			break;
-
-		case 8:
-			HAL_GPIO_WritePin(SEG_A_GPIO_Port, SEG_A_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_B_GPIO_Port, SEG_B_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_C_GPIO_Port, SEG_C_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_D_GPIO_Port, SEG_D_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_E_GPIO_Port, SEG_E_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_F_GPIO_Port, SEG_F_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_G_GPIO_Port, SEG_G_Pin, RESET);
-			break;
-
-		case 9:
-			HAL_GPIO_WritePin(SEG_A_GPIO_Port, SEG_A_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_B_GPIO_Port, SEG_B_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_C_GPIO_Port, SEG_C_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_D_GPIO_Port, SEG_D_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_E_GPIO_Port, SEG_E_Pin, SET);
-			HAL_GPIO_WritePin(SEG_F_GPIO_Port, SEG_F_Pin, RESET);
-			HAL_GPIO_WritePin(SEG_G_GPIO_Port, SEG_G_Pin, RESET);
-			break;
-
-		default:
-			HAL_GPIO_WritePin(SEG_A_GPIO_Port, SEG_A_Pin, SET);
-			HAL_GPIO_WritePin(SEG_B_GPIO_Port, SEG_B_Pin, SET);
-			HAL_GPIO_WritePin(SEG_C_GPIO_Port, SEG_C_Pin, SET);
-			HAL_GPIO_WritePin(SEG_D_GPIO_Port, SEG_D_Pin, SET);
-			HAL_GPIO_WritePin(SEG_E_GPIO_Port, SEG_E_Pin, SET);
-			HAL_GPIO_WritePin(SEG_F_GPIO_Port, SEG_F_Pin, SET);
-			HAL_GPIO_WritePin(SEG_G_GPIO_Port, SEG_G_Pin, SET);
-			break;
-	}
-}
-
 void ResetLED(int led_set){
 	uint16_t start_pin = GetLEDSetPin(led_set);
 
-	//If error -> All LED on
 	if(start_pin == -1){
-		HAL_GPIO_WritePin(GPIOA, start_pin, RESET);
-		HAL_GPIO_WritePin(GPIOA, start_pin << 1, RESET);
-		HAL_GPIO_WritePin(GPIOA, start_pin << 2, RESET);
+		DisplayLEDError();
+		return;
 	}
 
-	if(start_pin != -1){
-		HAL_GPIO_WritePin(GPIOA, start_pin, SET);
-		HAL_GPIO_WritePin(GPIOA, start_pin << 1, SET);
-		HAL_GPIO_WritePin(GPIOA, start_pin << 2, SET);
-	}
+	HAL_GPIO_WritePin(GPIOA, start_pin << 0, SET);
+	HAL_GPIO_WritePin(GPIOA, start_pin << 1, SET);
+	HAL_GPIO_WritePin(GPIOA, start_pin << 2, SET);
 }
 
 void DisplayLED(int led_set, int led_state){
@@ -330,7 +149,8 @@ void DisplayLED(int led_set, int led_state){
 	uint16_t start_pin = GetLEDSetPin(led_set);
 
 	if(start_pin == -1){
-		led_state = -1;
+		DisplayLEDError();
+		return;
 	}
 
 	switch(led_state){
@@ -343,19 +163,16 @@ void DisplayLED(int led_set, int led_state){
 		return;
 
 	case STATE_RED:
-		HAL_GPIO_WritePin(GPIOA, start_pin, RESET);
+		HAL_GPIO_WritePin(GPIOA, start_pin << 0, RESET);
 		return;
 
-	//If error -> all LED on
 	default:
-		HAL_GPIO_WritePin(GPIOA, start_pin, RESET);
-		HAL_GPIO_WritePin(GPIOA, start_pin << 1, RESET);
-		HAL_GPIO_WritePin(GPIOA, start_pin << 2, RESET);
+		DisplayLEDError();
 		return;
 	}
 }
 
-uint16_t GetLEDSetPin(led_set){
+uint16_t GetLEDSetPin(int led_set){
 	switch(led_set){
 	case SET_A:
 		return LED_RED_0_Pin;
@@ -363,7 +180,129 @@ uint16_t GetLEDSetPin(led_set){
 	case SET_B:
 		return LED_RED_1_Pin;
 
-	//Catch error when led_set != SET_A or SET_B
+	//Catch error when led_set isn't SET_A or SET_B
+	default:
+		return -1;
+	}
+}
+
+void DisplayLEDError(){
+	//All LED turn on
+	HAL_GPIO_WritePin(GPIOA, LED_RED_0_Pin, RESET);
+	HAL_GPIO_WritePin(GPIOA, LED_YELLOW_0_Pin, RESET);
+	HAL_GPIO_WritePin(GPIOA, LED_GREEN_0_Pin, RESET);
+
+	HAL_GPIO_WritePin(GPIOA, LED_RED_1_Pin, RESET);
+	HAL_GPIO_WritePin(GPIOA, LED_YELLOW_1_Pin, RESET);
+	HAL_GPIO_WritePin(GPIOA, LED_GREEN_1_Pin, RESET);
+}
+
+void Display7SEG(int segment_set, int num){
+	Reset7SEG(segment_set);
+
+	uint16_t start_pin = Get7SEGSetPin(segment_set);
+	if(start_pin == -1){
+		Display7SEGError();
+		return;
+	}
+
+	uint8_t number_code = GetNumberCode(num);
+	if(start_pin == -1){
+		Display7SEGError();
+		return;
+	}
+
+	HAL_GPIO_WritePin(GPIOB, start_pin << 0, !(CODE_SEG_A & number_code));
+	HAL_GPIO_WritePin(GPIOB, start_pin << 1, !(CODE_SEG_B & number_code));
+	HAL_GPIO_WritePin(GPIOB, start_pin << 2, !(CODE_SEG_C & number_code));
+	HAL_GPIO_WritePin(GPIOB, start_pin << 3, !(CODE_SEG_D & number_code));
+	HAL_GPIO_WritePin(GPIOB, start_pin << 4, !(CODE_SEG_E & number_code));
+	HAL_GPIO_WritePin(GPIOB, start_pin << 5, !(CODE_SEG_F & number_code));
+	HAL_GPIO_WritePin(GPIOB, start_pin << 6, !(CODE_SEG_G & number_code));
+
+}
+
+void Reset7SEG(int segment_set){
+	uint16_t start_pin = Get7SEGSetPin(segment_set);
+	if(start_pin == -1){
+		Display7SEGError();
+		return;
+	}
+
+	HAL_GPIO_WritePin(GPIOB, start_pin << 0, SET);
+	HAL_GPIO_WritePin(GPIOB, start_pin << 1, SET);
+	HAL_GPIO_WritePin(GPIOB, start_pin << 2, SET);
+	HAL_GPIO_WritePin(GPIOB, start_pin << 3, SET);
+	HAL_GPIO_WritePin(GPIOB, start_pin << 4, SET);
+	HAL_GPIO_WritePin(GPIOB, start_pin << 5, SET);
+	HAL_GPIO_WritePin(GPIOB, start_pin << 6, SET);
+}
+
+uint16_t Get7SEGSetPin(int segment_set){
+	switch(segment_set){
+	case SET_A:
+		return SEG_A0_Pin;
+
+	case SET_B:
+		return SEG_A1_Pin;
+
+	//Catch error
+	default:
+		return -1;
+	}
+}
+
+void Display7SEGError(){
+	//If error happen, only g-segment is on
+	HAL_GPIO_WritePin(GPIOB, SEG_A0_Pin, SET);
+	HAL_GPIO_WritePin(GPIOB, SEG_B0_Pin, SET);
+	HAL_GPIO_WritePin(GPIOB, SEG_C0_Pin, SET);
+	HAL_GPIO_WritePin(GPIOB, SEG_D0_Pin, SET);
+	HAL_GPIO_WritePin(GPIOB, SEG_E0_Pin, SET);
+	HAL_GPIO_WritePin(GPIOB, SEG_F0_Pin, SET);
+	HAL_GPIO_WritePin(GPIOB, SEG_G0_Pin, RESET);
+
+	HAL_GPIO_WritePin(GPIOB, SEG_A1_Pin, SET);
+	HAL_GPIO_WritePin(GPIOB, SEG_B1_Pin, SET);
+	HAL_GPIO_WritePin(GPIOB, SEG_C1_Pin, SET);
+	HAL_GPIO_WritePin(GPIOB, SEG_D1_Pin, SET);
+	HAL_GPIO_WritePin(GPIOB, SEG_E1_Pin, SET);
+	HAL_GPIO_WritePin(GPIOB, SEG_F1_Pin, SET);
+	HAL_GPIO_WritePin(GPIOB, SEG_G1_Pin, RESET);
+}
+
+uint8_t GetNumberCode(int number){
+	switch(number){
+	case 0:
+		return CODE_NUM_0;
+
+	case 1:
+		return CODE_NUM_1;
+
+	case 2:
+		return CODE_NUM_2;
+
+	case 3:
+		return CODE_NUM_3;
+
+	case 4:
+		return CODE_NUM_4;
+
+	case 5:
+		return CODE_NUM_5;
+
+	case 6:
+		return CODE_NUM_6;
+
+	case 7:
+		return CODE_NUM_7;
+
+	case 8:
+		return CODE_NUM_8;
+
+	case 9:
+		return CODE_NUM_9;
+
 	default:
 		return -1;
 	}
@@ -400,7 +339,6 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-  int counter = 0;
 
   int set_a_counter = COUNTER_RED;
   int set_a_state = STATE_RED;
@@ -408,8 +346,9 @@ int main(void)
   int set_b_counter = COUNTER_GREEN;
   int set_b_state = STATE_GREEN;
 
-  DrawSetA(set_a_state);
-  DrawSetB(set_b_state);
+  DisplayLED(SET_A, set_a_state);
+  DisplayLED(SET_B, set_b_state);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -423,21 +362,17 @@ int main(void)
 	if(set_a_counter <= 0){
 		set_a_state = GetNextState(set_a_state);
 		set_a_counter = GetStateCounter(set_a_state);
-		DrawSetA(set_a_state);
+		DisplayLED(SET_A, set_a_state);
 	}
 
 	if(set_b_counter <= 0){
 		set_b_state = GetNextState(set_b_state);
 		set_b_counter = GetStateCounter(set_b_state);
-		DrawSetB(set_b_state);
+		DisplayLED(SET_B, set_b_state);
 	}
-	--set_a_counter;
-	--set_b_counter;
 
-	//7-Seg segment
-	if(counter >= 10) counter = 0;
-	display7SEG(counter++);
-
+	Display7SEG(SET_A, set_a_counter--);
+	Display7SEG(SET_B, set_b_counter--);
 
 	HAL_Delay(1000);
   }
