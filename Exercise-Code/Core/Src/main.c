@@ -52,6 +52,7 @@ static void MX_GPIO_Init(void);
 void clearAllClock();
 void setNumberOnClock(int number);
 void clearNumberOnClock(int number);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -78,6 +79,7 @@ void setNumberOnClock(int number){
 void clearNumberOnClock(int number){
 	HAL_GPIO_WritePin(GPIOA, LED_0_Pin << number, SET);
 }
+
 /* USER CODE END 0 */
 
 /**
@@ -112,6 +114,9 @@ int main(void)
 	int hour = 0;
 	int minute = 0;
 	int second = 0;
+
+	int sec_counter = 5;
+	int min_counter = 5;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -122,8 +127,40 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	clearAllClock();
-	setNumberOnClock();
+	setNumberOnClock(second);
+	setNumberOnClock(minute);
+	setNumberOnClock(hour);
 
+//Update counter
+	sec_counter--;
+	//Update every 5sec
+	if(sec_counter <= 0){
+		second++;
+		sec_counter = 5;
+	}
+
+	//Reset every 1min -> update min_counter
+	if(second >= 12){
+		min_counter--;
+		second = 0;
+	}
+
+	//Update every 5min
+	if(min_counter <= 0){
+		minute++;
+		min_counter = 5;
+	}
+
+	//Update hour every 12 min_LED, reset minute
+	if(minute >= 12){
+		hour++;
+		minute = 0;
+	}
+
+	//Reset after 12hour
+	if(hour >= 12){
+		hour = 0;
+	}
 
 	HAL_Delay(1000);
   }
