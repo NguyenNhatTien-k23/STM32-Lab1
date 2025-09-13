@@ -49,12 +49,35 @@
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
-
+void clearAllClock();
+void setNumberOnClock(int number);
+void clearNumberOnClock(int number);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void clearAllClock(){
+	HAL_GPIO_WritePin(GPIOA, LED_0_Pin << 0, SET);
+	HAL_GPIO_WritePin(GPIOA, LED_0_Pin << 1, SET);
+	HAL_GPIO_WritePin(GPIOA, LED_0_Pin << 2, SET);
+	HAL_GPIO_WritePin(GPIOA, LED_0_Pin << 3, SET);
+	HAL_GPIO_WritePin(GPIOA, LED_0_Pin << 4, SET);
+	HAL_GPIO_WritePin(GPIOA, LED_0_Pin << 5, SET);
+	HAL_GPIO_WritePin(GPIOA, LED_0_Pin << 6, SET);
+	HAL_GPIO_WritePin(GPIOA, LED_0_Pin << 7, SET);
+	HAL_GPIO_WritePin(GPIOA, LED_0_Pin << 8, SET);
+	HAL_GPIO_WritePin(GPIOA, LED_0_Pin << 9, SET);
+	HAL_GPIO_WritePin(GPIOA, LED_0_Pin << 10, SET);
+	HAL_GPIO_WritePin(GPIOA, LED_0_Pin << 11, SET);
+}
 
+void setNumberOnClock(int number){
+	HAL_GPIO_WritePin(GPIOA, LED_0_Pin << number, RESET);
+}
+
+void clearNumberOnClock(int number){
+	HAL_GPIO_WritePin(GPIOA, LED_0_Pin << number, SET);
+}
 /* USER CODE END 0 */
 
 /**
@@ -86,7 +109,9 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-
+	int hour = 0;
+	int minute = 0;
+	int second = 0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -96,18 +121,9 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	HAL_GPIO_TogglePin(GPIOA, LED_0_Pin << 0);
-	HAL_GPIO_TogglePin(GPIOA, LED_0_Pin << 1);
-	HAL_GPIO_TogglePin(GPIOA, LED_0_Pin << 2);
-	HAL_GPIO_TogglePin(GPIOA, LED_0_Pin << 3);
-	HAL_GPIO_TogglePin(GPIOA, LED_0_Pin << 4);
-	HAL_GPIO_TogglePin(GPIOA, LED_0_Pin << 5);
-	HAL_GPIO_TogglePin(GPIOA, LED_0_Pin << 6);
-	HAL_GPIO_TogglePin(GPIOA, LED_0_Pin << 7);
-	HAL_GPIO_TogglePin(GPIOA, LED_0_Pin << 8);
-	HAL_GPIO_TogglePin(GPIOA, LED_0_Pin << 9);
-	HAL_GPIO_TogglePin(GPIOA, LED_0_Pin << 10);
-	HAL_GPIO_TogglePin(GPIOA, LED_0_Pin << 11);
+	clearAllClock();
+	setNumberOnClock();
+
 
 	HAL_Delay(1000);
   }
