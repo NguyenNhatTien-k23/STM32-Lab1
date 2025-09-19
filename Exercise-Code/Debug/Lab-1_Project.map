@@ -1901,11 +1901,12 @@ LOAD c:/st/stm32cubeide_1.7.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.exte
  .text.setNumberOnClock
                 0x00000000080001e0       0x28 ./Core/Src/main.o
                 0x00000000080001e0                setNumberOnClock
- .text.main     0x0000000008000208       0x96 ./Core/Src/main.o
+ .text.main     0x0000000008000208       0x94 ./Core/Src/main.o
                 0x0000000008000208                main
  .text.SystemClock_Config
-                0x000000000800029e       0x76 ./Core/Src/main.o
-                0x000000000800029e                SystemClock_Config
+                0x000000000800029c       0x76 ./Core/Src/main.o
+                0x000000000800029c                SystemClock_Config
+ *fill*         0x0000000008000312        0x2 
  .text.MX_GPIO_Init
                 0x0000000008000314       0x68 ./Core/Src/main.o
  .text.Error_Handler
