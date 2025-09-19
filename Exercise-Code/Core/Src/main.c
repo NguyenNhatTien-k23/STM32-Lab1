@@ -36,8 +36,8 @@
 #define STATE_YELLOW 1
 #define STATE_RED 2
 
-#define COUNTER_GREEN 2
-#define COUNTER_YELLOW 3
+#define COUNTER_GREEN 3
+#define COUNTER_YELLOW 2
 #define COUNTER_RED 5
 
 #define SET_A 0
