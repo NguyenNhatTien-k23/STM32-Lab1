@@ -150,12 +150,12 @@ int GetStateCounter(int led_state){
  80001a8:	e005      	b.n	80001b6 <GetStateCounter+0x2e>
 	case STATE_GREEN:
 		return COUNTER_GREEN;
- 80001aa:	2302      	movs	r3, #2
+ 80001aa:	2303      	movs	r3, #3
  80001ac:	e005      	b.n	80001ba <GetStateCounter+0x32>
 
 	case STATE_YELLOW:
 		return COUNTER_YELLOW;
- 80001ae:	2303      	movs	r3, #3
+ 80001ae:	2302      	movs	r3, #2
  80001b0:	e003      	b.n	80001ba <GetStateCounter+0x32>
 
 	case STATE_RED:
@@ -504,7 +504,7 @@ int main(void)
  80003e4:	60bb      	str	r3, [r7, #8]
 
   int set_b_counter = COUNTER_GREEN;
- 80003e6:	2302      	movs	r3, #2
+ 80003e6:	2303      	movs	r3, #3
  80003e8:	607b      	str	r3, [r7, #4]
   int set_b_state = STATE_GREEN;
  80003ea:	2300      	movs	r3, #0
