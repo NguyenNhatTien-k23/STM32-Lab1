@@ -91,23 +91,17 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  int counter = 0;
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	HAL_GPIO_TogglePin(GPIOA, LED_0_Pin << 0);
-	HAL_GPIO_TogglePin(GPIOA, LED_0_Pin << 1);
-	HAL_GPIO_TogglePin(GPIOA, LED_0_Pin << 2);
-	HAL_GPIO_TogglePin(GPIOA, LED_0_Pin << 3);
-	HAL_GPIO_TogglePin(GPIOA, LED_0_Pin << 4);
-	HAL_GPIO_TogglePin(GPIOA, LED_0_Pin << 5);
-	HAL_GPIO_TogglePin(GPIOA, LED_0_Pin << 6);
-	HAL_GPIO_TogglePin(GPIOA, LED_0_Pin << 7);
-	HAL_GPIO_TogglePin(GPIOA, LED_0_Pin << 8);
-	HAL_GPIO_TogglePin(GPIOA, LED_0_Pin << 9);
-	HAL_GPIO_TogglePin(GPIOA, LED_0_Pin << 10);
-	HAL_GPIO_TogglePin(GPIOA, LED_0_Pin << 11);
+	HAL_GPIO_TogglePin(GPIOA, LED_0_Pin << counter);
+	counter++;
+	if(counter >= 12){
+		counter = 0;
+	}
 
 	HAL_Delay(1000);
   }
